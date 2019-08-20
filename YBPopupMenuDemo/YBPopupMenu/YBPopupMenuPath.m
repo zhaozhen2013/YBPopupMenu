@@ -37,12 +37,12 @@
                          arrowDirection:(YBPopupMenuArrowDirection)arrowDirection
 {
     UIBezierPath *bezierPath = [UIBezierPath bezierPath];
-    if (borderColor) {
-        [borderColor setStroke];
-    }
-    if (backgroundColor) {
-        [backgroundColor setFill];
-    }
+//    if (borderColor) {
+//        [borderColor setStroke];
+//    }
+//    if (backgroundColor) {
+//        [backgroundColor setFill];
+//    }
     bezierPath.lineWidth = borderWidth;
     rect = CGRectMake(borderWidth / 2, borderWidth / 2, YBRectWidth(rect) - borderWidth, YBRectHeight(rect) - borderWidth);
     CGFloat topRightRadius = 0,topLeftRadius = 0,bottomRightRadius = 0,bottomLeftRadius = 0;

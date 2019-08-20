@@ -182,9 +182,10 @@ typedef NS_ENUM(NSInteger , YBPopupMenuPriorityDirection) {
 @property (nonatomic, assign) CGFloat itemHeight;
 
 /**
- popupMenu距离最近的Screen的距离 Default is 10
+ popupMenu距离最近的Screen的横向和纵向距离 Default is 10
  */
-@property (nonatomic, assign) CGFloat minSpace;
+@property (nonatomic, assign) CGFloat marginHorizontal;
+@property (nonatomic, assign) CGFloat marginVertical;
 
 /**
  设置显示模式 自定义cell时忽略 Default is YBPopupMenuTypeDefault

@@ -299,7 +299,8 @@ UITableViewDataSource
     _type = YBPopupMenuTypeDefault;
     _arrowDirection = YBPopupMenuArrowDirectionTop;
     _priorityDirection = YBPopupMenuPriorityDirectionTop;
-    _minSpace = 10.0;
+    _marginHorizontal = 10.0;
+    _marginVertical = 10.0;
     _maxVisibleCount = 5;
     _itemHeight = 44;
     _isCornerChanged = NO;
@@ -497,7 +498,7 @@ UITableViewDataSource
     }
      _isChangeDirection = NO;
     if (_priorityDirection == YBPopupMenuPriorityDirectionTop) {
-        if (_point.y + height + _arrowHeight > YBScreenHeight - _minSpace) {
+        if (_point.y + height + _arrowHeight > YBScreenHeight - _marginVertical) {
             _arrowDirection = YBPopupMenuArrowDirectionBottom;
             _isChangeDirection = YES;
         }else {
@@ -505,7 +506,7 @@ UITableViewDataSource
             _isChangeDirection = NO;
         }
     }else if (_priorityDirection == YBPopupMenuPriorityDirectionBottom) {
-        if (_point.y - height - _arrowHeight < _minSpace) {
+        if (_point.y - height - _arrowHeight < _marginVertical) {
             _arrowDirection = YBPopupMenuArrowDirectionTop;
             _isChangeDirection = YES;
         }else {
@@ -513,7 +514,7 @@ UITableViewDataSource
             _isChangeDirection = NO;
         }
     }else if (_priorityDirection == YBPopupMenuPriorityDirectionLeft) {
-        if (_point.x + _itemWidth + _arrowHeight > YBScreenWidth - _minSpace) {
+        if (_point.x + _itemWidth + _arrowHeight > YBScreenWidth - _marginHorizontal) {
             _arrowDirection = YBPopupMenuArrowDirectionRight;
             _isChangeDirection = YES;
         }else {
@@ -521,7 +522,7 @@ UITableViewDataSource
             _isChangeDirection = NO;
         }
     }else if (_priorityDirection == YBPopupMenuPriorityDirectionRight) {
-        if (_point.x - _itemWidth - _arrowHeight < _minSpace) {
+        if (_point.x - _itemWidth - _arrowHeight < _marginHorizontal) {
             _arrowDirection = YBPopupMenuArrowDirectionLeft;
             _isChangeDirection = YES;
         }else {
@@ -534,18 +535,18 @@ UITableViewDataSource
     if (_arrowDirection == YBPopupMenuArrowDirectionTop) {
         CGFloat y = _isChangeDirection ? _point.y  : _point.y;
         if (_arrowPosition > _itemWidth / 2) {
-            self.frame = CGRectMake(YBScreenWidth - _minSpace - _itemWidth, y, _itemWidth, height + _arrowHeight);
+            self.frame = CGRectMake(YBScreenWidth - _marginHorizontal - _itemWidth, y, _itemWidth, height + _arrowHeight);
         }else if (_arrowPosition < _itemWidth / 2) {
-            self.frame = CGRectMake(_minSpace, y, _itemWidth, height + _arrowHeight);
+            self.frame = CGRectMake(_marginHorizontal, y, _itemWidth, height + _arrowHeight);
         }else {
             self.frame = CGRectMake(_point.x - _itemWidth / 2, y, _itemWidth, height + _arrowHeight);
         }
     }else if (_arrowDirection == YBPopupMenuArrowDirectionBottom) {
         CGFloat y = _isChangeDirection ? _point.y - _arrowHeight - height : _point.y - _arrowHeight - height;
         if (_arrowPosition > _itemWidth / 2) {
-            self.frame = CGRectMake(YBScreenWidth - _minSpace - _itemWidth, y, _itemWidth, height + _arrowHeight);
+            self.frame = CGRectMake(YBScreenWidth - _marginHorizontal - _itemWidth, y, _itemWidth, height + _arrowHeight);
         }else if (_arrowPosition < _itemWidth / 2) {
-            self.frame = CGRectMake(_minSpace, y, _itemWidth, height + _arrowHeight);
+            self.frame = CGRectMake(_marginHorizontal, y, _itemWidth, height + _arrowHeight);
         }else {
             self.frame = CGRectMake(_point.x - _itemWidth / 2, y, _itemWidth, height + _arrowHeight);
         }
@@ -577,6 +578,7 @@ UITableViewDataSource
     [self setAnchorPoint];
     [self setOffset];
     [self.tableView reloadData];
+    [self drawMaskRect:self.frame];
     [self setNeedsDisplay];
 }
 
@@ -722,10 +724,10 @@ UITableViewDataSource
         return;
     }
     if (_arrowDirection == YBPopupMenuArrowDirectionTop || _arrowDirection == YBPopupMenuArrowDirectionBottom) {
-        if (_point.x + _itemWidth / 2 > YBScreenWidth - _minSpace) {
-            _arrowPosition = _itemWidth - (YBScreenWidth - _minSpace - _point.x);
-        }else if (_point.x < _itemWidth / 2 + _minSpace) {
-            _arrowPosition = _point.x - _minSpace;
+        if (_point.x + _itemWidth / 2 > YBScreenWidth - _marginHorizontal) {
+            _arrowPosition = _itemWidth - (YBScreenWidth - _marginHorizontal - _point.x);
+        }else if (_point.x < _itemWidth / 2 + _marginHorizontal) {
+            _arrowPosition = _point.x - _marginHorizontal;
         }else {
             _arrowPosition = _itemWidth / 2;
         }
@@ -741,11 +743,19 @@ UITableViewDataSource
     }
 }
 
+- (void)drawMaskRect:(CGRect)rect {
+    CAShapeLayer *maskLayer = [CAShapeLayer layer];
+    self.backgroundColor = _backColor;
+    UIBezierPath *bezierPath = [YBPopupMenuPath yb_bezierPathWithRect:rect rectCorner:_rectCorner cornerRadius:_cornerRadius borderWidth:_borderWidth borderColor:_borderColor backgroundColor:_backColor arrowWidth:_arrowWidth arrowHeight:_arrowHeight arrowPosition:_arrowPosition arrowDirection:_arrowDirection];
+    maskLayer.path = bezierPath.CGPath;
+    self.layer.mask = maskLayer;
+}
+
 - (void)drawRect:(CGRect)rect
 {
-    UIBezierPath *bezierPath = [YBPopupMenuPath yb_bezierPathWithRect:rect rectCorner:_rectCorner cornerRadius:_cornerRadius borderWidth:_borderWidth borderColor:_borderColor backgroundColor:_backColor arrowWidth:_arrowWidth arrowHeight:_arrowHeight arrowPosition:_arrowPosition arrowDirection:_arrowDirection];
-    [bezierPath fill];
-    [bezierPath stroke];
+//    UIBezierPath *bezierPath = [YBPopupMenuPath yb_bezierPathWithRect:rect rectCorner:_rectCorner cornerRadius:_cornerRadius borderWidth:_borderWidth borderColor:_borderColor backgroundColor:_backColor arrowWidth:_arrowWidth arrowHeight:_arrowHeight arrowPosition:_arrowPosition arrowDirection:_arrowDirection];
+//    [bezierPath fill];
+//    [bezierPath stroke];
 }
 
 @end
